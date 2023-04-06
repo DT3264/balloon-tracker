@@ -11,9 +11,9 @@ Each participant's submission status is marked with a number that indicates whet
 
 # Usage
 
-1) In the config file set the platform to use (either omegaup or codeforces)
-2) Define the appropiated variables for that platform in the config file 
-3) From your existing python installation or a virtual environment install the requirements
+1) In the config.py file, at the top set the platform to use (either omegaup or codeforces)
+2) In that same file set the appropiated variables for the selected platform in the config file 
+3) In your existing python installation or in a virtual environment install the requirements
 ```
 pip install -r requirements.txt
 ```
