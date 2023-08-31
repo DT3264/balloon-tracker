@@ -32,5 +32,3 @@ To mark a balloon as delivered you just click in the orange tile that you want t
 Although if the page is reloaded, you'll have to check again the teams that you want to track 
 ![alt text](img/screenshot.png)
 
-# Extra note
-The original code for the index.html is located in client/main.jsx which is included in case you want to play around with the client more easily than directly manipulating the html.
