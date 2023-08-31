@@ -9,7 +9,6 @@ PLATFORM = "OMEGAUP"
 ## Seconds to wait between each request for new data
 SECONDS_INTERVAL = 30
 
-
 # *********************************
 # *****     OMEGAUP STUFF     *****
 # *********************************
