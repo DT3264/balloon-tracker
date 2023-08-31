@@ -16,10 +16,10 @@ SECONDS_INTERVAL = 30
 OMEGAUP = {
     # The alias of the contest (also known as titulo corto), also is the contest path
     # omegaup.com/contest/{ALIAS}/
-    'CONTEST_ALIAS': "ccms2023",
-    # The omegaup cookie that allows the requests to go through
-    # You can find it by going to the omegaup cookies in the developer tools
-    'OUAT': "2b6d20441d8bb6b494f79b76a88298-13814-1caec061c653ef21d1fab068a253fe7087c30317c862e85d79927f6bd7e58a11"
+    'CONTEST_ALIAS': "CONTEST_ALIAS",
+    # The omegaup api key that allows the requests to go through
+    # You can find it by going to https://omegaup.com/profile/#manage-api-tokens
+    'API_TOKEN': "YOUR_API_TOKEN"
 }
 
 # ************************************

@@ -10,9 +10,9 @@ class OmegaupFetcher:
     def __init__(self):
         self.contest_alias = config.OMEGAUP['CONTEST_ALIAS']
         self.problem_order: Dict[str, int] = {}
-        self.cookies = {
-            'ouat': config.OMEGAUP['OUAT']
-        }
+        self.headers = {
+    'Authorization': f'token {config.OMEGAUP["API_TOKEN"]}'
+}
 
     def fetch_ac_submissions(self) -> list[dict[str, int]]:
         url = 'https://omegaup.com/api/contest/runs/'
@@ -26,7 +26,7 @@ class OmegaupFetcher:
                 'show_all': 'true',
                 'offset': offset,
             }
-            response = requests.post(url, data, cookies=self.cookies).json()
+            response = requests.post(url, data, headers=self.headers).json()
             for run in response["runs"]:
                 # Get the index of the problem
                 problem_order = self.problem_order[run['alias']]
@@ -43,7 +43,7 @@ class OmegaupFetcher:
         # Gets the scoreboard which has the amount of problems and the contestants
         url = "https://omegaup.com/api/contest/scoreboard/"
         data = {'contest_alias': self.contest_alias}
-        response = requests.post(url, data, cookies=self.cookies).json()
+        response = requests.post(url, data, headers=self.headers).json()
         self.__prepare_problems_index(response)
         base_data = []
         # Array of 0s, meaning we have no data for that problem yet
