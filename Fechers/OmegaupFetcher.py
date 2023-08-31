@@ -11,8 +11,8 @@ class OmegaupFetcher:
         self.contest_alias = config.OMEGAUP['CONTEST_ALIAS']
         self.problem_order: Dict[str, int] = {}
         self.headers = {
-    'Authorization': f'token {config.OMEGAUP["API_TOKEN"]}'
-}
+            'Authorization': f'token {config.OMEGAUP["API_TOKEN"]}'
+        }
 
     def fetch_ac_submissions(self) -> list[dict[str, int]]:
         url = 'https://omegaup.com/api/contest/runs/'
