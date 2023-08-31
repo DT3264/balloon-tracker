@@ -1,193 +1,142 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Balloon-tracker</title>
-    <!-- React and ReactDOM -->
-    <script src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
-    <!-- React Bootstrap -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/bootstrap@5.2.2/dist/css/bootstrap.min.css"
-      crossorigin="anonymous"
-    />
-    <script src="https://unpkg.com/react-bootstrap@2.0.0-beta.6/dist/react-bootstrap.min.js"></script>
+	<body>
+		<div id="app"></div>
+		<!-- React and ReactDOM -->
+		<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+		<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- Axios -->
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script>
-      const { useState, useEffect } = React;
-      const { Button, Table } = ReactBootstrap;
-      const axios = window.axios;
-      function App() {
-        const [data, setData] = useState([]);
-        const [loading, setLoading] = useState(false);
-        const [error, setError] = useState(undefined);
-        const [checkedItems, setCheckedItems] = useState([]);
-        const getUrl = () => {
-          // Commented out when testing individually
-          // let baseUrl = "http://127.0.0.1:8000";
-          // Commented out when serving from the backend
-          let baseUrl = window.location.href;
-          if (baseUrl.endsWith("/")) {
-            baseUrl = baseUrl.slice(0, -1);
-          }
-          return baseUrl;
-        };
-        const fetchData = async () => {
-          setLoading(true);
-          axios
-            .get(`${getUrl()}/get-data/`)
-            .then((result) => {
-              setData(result.data.data);
-              setError(undefined);
-              setLoading(false);
-            })
-            .catch((error) => {
-              console.error(error);
-              setError(error);
-              setLoading(false);
-            });
-        };
-        useEffect(() => {
-          fetchData();
-          const interval = setInterval(() => {
-            fetchData();
-          }, 10 * 1000);
-          return () => clearInterval(interval);
-        }, []);
-        const sortedData = [...data].sort((a, b) => {
-          const aChecked = checkedItems.includes(a.username);
-          const bChecked = checkedItems.includes(b.username);
-          if (aChecked && !bChecked) {
-            return -1;
-          } else if (!aChecked && bChecked) {
-            return 1;
-          } else {
-            return 0;
-          }
-        });
-        const onClick = (username, problemIdx, problemStatus) => {
-          if (problemStatus === 0 || problemStatus == 2) return;
-          const confirmed = window.confirm(
-            `Confirming updating problem ${String.fromCharCode(
-              65 + problemIdx
-            )} for ${username}?`
-          );
-          if (confirmed) {
-            axios
-              .post(`${getUrl()}/update-submission`, {
-                username: username,
-                problem_index: problemIdx,
-              })
-              .then((_) => fetchData())
-              .catch((error) => console.error(error));
-          }
-        };
-        const problemCount = data.length > 0 ? data[0].problems.length : 0;
-        const problemHeaders = [];
-        for (var i = 0; i < problemCount; i++) {
-          problemHeaders.push(String.fromCharCode(65 + i));
-        }
-        return /*#__PURE__*/ React.createElement(
-          "div",
-          null,
-          loading
-            ? /*#__PURE__*/ React.createElement("p", null, "Loading data")
-            : /*#__PURE__*/ React.createElement(React.Fragment, null),
-          error !== undefined
-            ? /*#__PURE__*/ React.createElement(
-                "p",
-                null,
-                "Error loading data, see the console for more information"
-              )
-            : /*#__PURE__*/ React.createElement(React.Fragment, null),
-          /*#__PURE__*/ React.createElement(
-            Table,
-            {
-              bordered: true,
-            },
-            /*#__PURE__*/ React.createElement(
-              "thead",
-              null,
-              /*#__PURE__*/ React.createElement(
-                "tr",
-                null,
-                /*#__PURE__*/ React.createElement("th", null, "On top"),
-                /*#__PURE__*/ React.createElement("th", null, "Username"),
-                problemHeaders.map((header) =>
-                  /*#__PURE__*/ React.createElement(
-                    "th",
-                    {
-                      key: header,
-                    },
-                    header
-                  )
-                )
-              )
-            ),
-            /*#__PURE__*/ React.createElement(
-              "tbody",
-              null,
-              sortedData.map((row) => {
-                return /*#__PURE__*/ React.createElement(
-                  "tr",
-                  {
-                    key: row.username,
-                  },
-                  /*#__PURE__*/ React.createElement(
-                    "td",
-                    null,
-                    /*#__PURE__*/ React.createElement("input", {
-                      type: "checkbox",
-                      checked: checkedItems.includes(row.username),
-                      onChange: (e) => {
-                        if (e.target.checked) {
-                          setCheckedItems([...checkedItems, row.username]);
-                        } else {
-                          setCheckedItems(
-                            checkedItems.filter(
-                              (username) => username !== row.username
-                            )
-                          );
-                        }
-                      },
-                    })
-                  ),
-                  /*#__PURE__*/ React.createElement("td", null, row.username),
-                  row.problems.map((problemStatus, index) => {
-                    let backgroundColor = "white";
-                    if (problemStatus === 1) backgroundColor = "orange";
-                    if (problemStatus === 2) backgroundColor = "lawngreen";
-                    return /*#__PURE__*/ React.createElement(
-                      "td",
-                      {
-                        className: "m-1",
-                        key: `${row.username}${index}`,
-                        onClick: () =>
-                          onClick(row.username, index, problemStatus),
-                        style: {
-                          backgroundColor: backgroundColor,
-                        },
-                      },
-                      problemStatus
-                    );
-                  })
-                );
-              })
-            )
-          )
-        );
-      }
-      ReactDOM.render(
-        React.createElement(App),
-        document.getElementById("root")
-      );
-    </script>
-  </body>
+		<!-- React Bootstrap -->
+		<link
+			rel="stylesheet"
+			href="https://unpkg.com/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+			crossorigin="anonymous"
+		/>
+		<script src="https://unpkg.com/react-bootstrap@2.0.0-beta.6/dist/react-bootstrap.min.js"></script>
+
+		<!-- Axios -->
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+		<script type="text/jsx">
+			const { useState, useEffect } = React;
+			  const { Button, Table } = ReactBootstrap;
+			  const axios = window.axios;
+			  const app = document.getElementById("app")
+
+			  //const [data, setData] = useState([]);
+			  function App (){
+			    const [data, setData] = useState([]);
+			    const [loading, setLoading] = useState(false);
+			    const [error, setError] = useState(undefined);
+			    const [checkedItems, setCheckedItems] = useState([]);
+			    const getUrl = () => {
+			      // Commented out when testing individually
+			      let baseUrl = "http://127.0.0.1:8000";
+			      // Commented out when serving from the backend
+			      // let baseUrl = window.location.href;
+			      if (baseUrl.endsWith("/")) {
+			        baseUrl = baseUrl.slice(0, -1);
+			      }
+			      return baseUrl;
+			    };
+			    const fetchData = async () => {
+			      setLoading(true);
+			      axios.get(`${getUrl()}/get-data/`)
+			      .then(result => {
+			        setData(result.data.data);
+			        setError(undefined);
+			        setLoading(false);
+			      })
+			      .catch(error => {
+			        console.error(error)
+			        setError(error);
+			        setLoading(false);
+			      });
+			    };
+			    useEffect(() => {
+			      fetchData();
+			      const interval = setInterval(() => {
+			        fetchData();
+			      }, 10*1000);
+
+			      return () => clearInterval(interval);
+			    }, []);
+
+
+			    const sortedData = [...data].sort((a, b) => {
+			      const aChecked = checkedItems.includes(a.username);
+			      const bChecked = checkedItems.includes(b.username);
+			      if (aChecked && !bChecked) {
+			        return -1;
+			      } else if (!aChecked && bChecked) {
+			        return 1;
+			      } else {
+			        return 0;
+			      }
+			    });
+			    const onClick=(username, problemIdx, problemStatus)=>{
+			      if(problemStatus === 0 || problemStatus === 2) return;
+			      const confirmed = window.confirm(`Confirming updating problem ${String.fromCharCode(65+problemIdx)} for ${username}?`);
+			      if (confirmed) {
+			        axios.post(`${getUrl()}/update-submission`, {
+			            'username': username,
+			            'problem_index': problemIdx
+			        })
+			        .then(_ => fetchData())
+			        .catch(error => console.error(error));
+			      }
+			    }
+
+			    const problemCount = data.length > 0 ? data[0].problems.length : 0;
+			    const problemHeaders = []
+			    for(var i = 0; i<problemCount; i++){
+			      problemHeaders.push(String.fromCharCode(65+i));
+			    }
+			    return (<div>
+			        {loading ? <p>Loading data</p> : <></>}
+			        {error !== undefined ? <p>Error loading data, see the console for more information</p> : <></>}
+			        <Table bordered={true}>
+			          <thead>
+			            <tr>
+			              <th>On top</th>
+			              <th>Username</th>
+			              {problemHeaders.map(header => <th key={header}>{header}</th>)}
+			            </tr>
+			          </thead>
+			          <tbody>
+			            {sortedData.map((row) => {
+			              return <tr key={row.username}>
+			                <td>
+			                  <input type="checkbox" checked={checkedItems.includes(row.username)} onChange={(e) => {
+			                    if (e.target.checked) {
+			                      setCheckedItems([...checkedItems, row.username]);
+			                    } else {
+			                      setCheckedItems(checkedItems.filter((username) => username !== row.username));
+			                    }
+			                  }} />
+			                </td>
+			                <td>{row.username}</td>
+			                {row.problems.map((problemStatus, index)=>{
+			                  let backgroundColor = "white";
+			                  if(problemStatus === 1) backgroundColor = "orange";
+			                  if(problemStatus === 2) backgroundColor = "lawngreen";
+			                  return <td
+			                    className='m-1'
+			                    key={`${row.username}${index}`}
+			                    onClick={()=>onClick(row.username, index, problemStatus)}
+			                    style={{ backgroundColor: backgroundColor}}>
+			                    {problemStatus}
+			                  </td>
+			                })}
+			              </tr>
+			            })}
+			          </tbody>
+			        </Table>
+			      </div>
+			    );
+			  };
+
+			  ReactDOM.render(<App />, app)
+		</script>
+	</body>
 </html>

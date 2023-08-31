@@ -50,7 +50,7 @@ def starting_task() -> None:
     loop.create_task(repetitive_task())
 
 
-@repeat_every(seconds=int(30))
+@repeat_every(seconds=int(config.SECONDS_INTERVAL))
 def repetitive_task() -> None:
     print("Updating data")
     runs = fetcher.fetch_ac_submissions()

@@ -1,15 +1,25 @@
-# [ OMEGAUP | CODEFORCES ]
-PLATFORM = "CODEFORCES"
+# *********************************
+# *****     GENERAL STUFF     *****
+# *********************************
+
+## The platform to use
+## [ OMEGAUP | CODEFORCES ]
+PLATFORM = "OMEGAUP"
+
+## Seconds to wait between each request for new data
+SECONDS_INTERVAL = 30
+
+
 # *********************************
 # *****     OMEGAUP STUFF     *****
 # *********************************
 OMEGAUP = {
     # The alias of the contest (also known as titulo corto), also is the contest path
     # omegaup.com/contest/{ALIAS}/
-    'CONTEST_ALIAS': "CONTEST_ALIAS",
+    'CONTEST_ALIAS': "ccms2023",
     # The omegaup cookie that allows the requests to go through
     # You can find it by going to the omegaup cookies in the developer tools
-    'OUAT': "YOUR_OUAT"
+    'OUAT': "2b6d20441d8bb6b494f79b76a88298-13814-1caec061c653ef21d1fab068a253fe7087c30317c862e85d79927f6bd7e58a11"
 }
 
 # ************************************

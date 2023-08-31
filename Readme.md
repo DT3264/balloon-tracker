@@ -19,7 +19,7 @@ pip install -r requirements.txt
 ```
 4) Run the app
 ```
-uvicorn main:app  --reload
+python run.py
 ```
 
 # Note
@@ -34,4 +34,3 @@ Although if the page is reloaded, you'll have to check again the teams that you 
 
 # Extra note
 The original code for the index.html is located in client/main.jsx which is included in case you want to play around with the client more easily than directly manipulating the html.
-```
